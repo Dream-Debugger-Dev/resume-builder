@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dream-debugger-dev.github.io/resume-builder/sitemap.xml

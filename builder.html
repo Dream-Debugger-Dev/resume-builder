@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Builder - Create Your Professional Resume | ResumeForge</title>
+  <meta name="description" content="Build your professional resume for free with our easy-to-use builder. ATS-friendly templates, live preview, PDF and Word download.">
+  <meta name="keywords" content="free resume builder, ats resume builder, resume pdf download free, online resume maker">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://dream-debugger-dev.github.io/resume-builder/builder.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/templates.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/tutorial.css">
+</head>
+<body>
+  <!-- Top Ad Placeholder -->
+  <div class="ad-placeholder ad-top" id="ad-top">
+    <span>Advertisement</span>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" style="text-decoration:none;">
+        <i class="fas fa-file-alt"></i>
+        <span>ResumeForge</span>
+      </a>
+      <nav class="nav-actions">
+        <button class="btn btn-ghost" id="btn-import" title="Import JSON">
+          <i class="fas fa-upload"></i> <span class="nav-text">Import</span>
+        </button>
+        <button class="btn btn-ghost" id="btn-export-json" title="Export JSON">
+          <i class="fas fa-download"></i> <span class="nav-text">Export</span>
+        </button>
+        <button class="btn btn-ghost" id="btn-dark-mode" title="Toggle Dark Mode">
+          <i class="fas fa-moon"></i>
+        </button>
+        <div class="download-dropdown" id="download-dropdown">
+          <button class="btn btn-primary" id="btn-download-main">
+            <i class="fas fa-download"></i> Download <i class="fas fa-caret-down" style="margin-left:2px;font-size:0.7rem;"></i>
+          </button>
+          <div class="download-menu" id="download-menu">
+            <button class="download-option" id="btn-download-pdf">
+              <i class="fas fa-file-pdf"></i>
+              <div>
+                <span class="download-option-title">PDF Document</span>
+                <span class="download-option-desc">Print-ready, best for applications</span>
+              </div>
+            </button>
+            <button class="download-option" id="btn-download-docx">
+              <i class="fas fa-file-word"></i>
+              <div>
+                <span class="download-option-title">Word Document (.docx)</span>
+                <span class="download-option-desc">Editable, easy to modify later</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Resume Strength Bar -->
+  <div class="strength-bar-container">
+    <div class="container">
+      <div class="strength-bar-inner">
+        <div class="strength-info">
+          <span class="strength-label">Resume Strength</span>
+          <span class="strength-score" id="strength-score">0%</span>
+        </div>
+        <div class="strength-track">
+          <div class="strength-fill" id="strength-fill" style="width:0%"></div>
+        </div>
+        <div class="strength-tip" id="strength-tip">Start filling your resume to improve your score!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <main class="main-layout">
+    <div class="ad-placeholder ad-sidebar" id="ad-sidebar"><span>Ad</span></div>
+
+    <!-- Form Panel -->
+    <section class="form-panel" id="form-panel">
+      <div class="step-progress">
+        <div class="step-track" id="step-track">
+          <div class="step active" data-step="0"><span class="step-num"><span>1</span></span><span class="step-label">Personal</span></div>
+          <div class="step" data-step="1"><span class="step-num"><span>2</span></span><span class="step-label">Education</span></div>
+          <div class="step" data-step="2"><span class="step-num"><span>3</span></span><span class="step-label">Experience</span></div>
+          <div class="step" data-step="3"><span class="step-num"><span>4</span></span><span class="step-label">Skills</span></div>
+          <div class="step" data-step="4"><span class="step-num"><span>5</span></span><span class="step-label">Projects</span></div>
+          <div class="step" data-step="5"><span class="step-num"><span>6</span></span><span class="step-label">Certs</span></div>
+        </div>
+      </div>
+
+      <div class="form-step active" data-step="0">
+        <h2 class="form-title"><i class="fas fa-user"></i> Personal Information</h2>
+        <div class="form-grid">
+          <div class="form-group"><label for="fullName">Full Name *</label><input type="text" id="fullName" placeholder="John Doe" data-field="fullName"></div>
+          <div class="form-group"><label for="jobTitle">Job Title</label><input type="text" id="jobTitle" placeholder="Frontend Developer" data-field="jobTitle"></div>
+          <div class="form-group"><label for="email">Email *</label><input type="email" id="email" placeholder="john@example.com" data-field="email"></div>
+          <div class="form-group"><label for="phone">Phone</label><input type="tel" id="phone" placeholder="+91 98765 43210" data-field="phone"></div>
+          <div class="form-group"><label for="location">Location</label><input type="text" id="location" placeholder="Mumbai, India" data-field="location"></div>
+          <div class="form-group"><label for="linkedin">LinkedIn</label><input type="url" id="linkedin" placeholder="https://linkedin.com/in/johndoe" data-field="linkedin"></div>
+          <div class="form-group"><label for="portfolio">Portfolio / Website</label><input type="url" id="portfolio" placeholder="https://johndoe.dev" data-field="portfolio"></div>
+          <div class="form-group full-width">
+            <label for="summary">Professional Summary</label>
+            <textarea id="summary" rows="4" placeholder="Brief summary of your professional background..." data-field="summary"></textarea>
+            <button class="btn btn-suggest" id="btn-suggest-summary"><i class="fas fa-lightbulb"></i> Get Suggestions</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-step" data-step="1"><h2 class="form-title"><i class="fas fa-graduation-cap"></i> Education</h2><div id="education-entries" class="entries-container"></div><button class="btn btn-add" id="add-education"><i class="fas fa-plus"></i> Add Education</button></div>
+      <div class="form-step" data-step="2"><h2 class="form-title"><i class="fas fa-briefcase"></i> Work Experience</h2><div id="experience-entries" class="entries-container"></div><button class="btn btn-add" id="add-experience"><i class="fas fa-plus"></i> Add Experience</button></div>
+      <div class="form-step" data-step="3"><h2 class="form-title"><i class="fas fa-cogs"></i> Skills</h2><div id="skills-entries" class="entries-container"></div><button class="btn btn-add" id="add-skill"><i class="fas fa-plus"></i> Add Skill</button></div>
+      <div class="form-step" data-step="4"><h2 class="form-title"><i class="fas fa-project-diagram"></i> Projects</h2><div id="projects-entries" class="entries-container"></div><button class="btn btn-add" id="add-project"><i class="fas fa-plus"></i> Add Project</button></div>
+      <div class="form-step" data-step="5"><h2 class="form-title"><i class="fas fa-certificate"></i> Certifications</h2><div id="certifications-entries" class="entries-container"></div><button class="btn btn-add" id="add-certification"><i class="fas fa-plus"></i> Add Certification</button></div>
+
+      <div class="form-nav" id="form-nav">
+        <button class="btn btn-secondary" id="btn-prev" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+        <button class="btn btn-primary" id="btn-next">Next <i class="fas fa-arrow-right"></i></button>
+      </div>
+    </section>
+
+    <!-- Preview Panel -->
+    <section class="preview-panel" id="preview-panel">
+      <div class="preview-header">
+        <h3>Live Preview</h3>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="template-btn" id="btn-fullscreen-preview" title="Full Screen Preview"><i class="fas fa-expand"></i></button>
+          <button class="preview-close-btn" id="btn-close-preview" style="display:none;"><i class="fas fa-times"></i> Close</button>
+        </div>
+      </div>
+      <div class="preview-scroll">
+        <div class="resume-page" id="resume-preview"></div>
+      </div>
+      <div class="template-picker">
+        <div class="template-card active" data-template="modern"><div class="template-card-icon"><i class="fas fa-th-large"></i></div><div class="template-card-preview"><img src="image/Template-1.png" alt="Modern" loading="lazy"><span class="template-card-check"><i class="fas fa-check"></i></span></div><span class="template-card-name">Modern</span></div>
+        <div class="template-card" data-template="creative"><div class="template-card-icon"><i class="fas fa-palette"></i></div><div class="template-card-preview"><img src="image/Template-2.png" alt="Creative" loading="lazy"><span class="template-card-check"><i class="fas fa-check"></i></span></div><span class="template-card-name">Creative</span></div>
+        <div class="template-card" data-template="corporate"><div class="template-card-icon"><i class="fas fa-building"></i></div><div class="template-card-preview"><img src="image/Template-3.png" alt="Corporate" loading="lazy"><span class="template-card-check"><i class="fas fa-check"></i></span></div><span class="template-card-name">Corporate</span></div>
+        <div class="template-card locked" data-template="premium"><div class="template-card-icon"><i class="fas fa-lock"></i></div><div class="template-card-preview"><div class="template-card-locked-overlay"><i class="fas fa-lock"></i></div><img src="image/Template-1.png" alt="Premium" loading="lazy" style="filter:blur(2px) grayscale(0.5);"></div><span class="template-card-name">Premium</span></div>
+      </div>
+    </section>
+  </main>
+
+  <button class="btn btn-preview-toggle" id="btn-preview-toggle"><i class="fas fa-eye"></i> Preview</button>
+
+  <button class="tutorial-help-btn" id="btn-tutorial" title="Take a tour"><i class="fas fa-question"></i><span class="help-tooltip">Take a guided tour</span></button>
+  <input type="file" id="file-import" accept=".json" style="display:none">
+
+  <div class="modal-overlay" id="suggestions-modal">
+    <div class="modal modal-suggestions">
+      <div class="modal-header"><h3><i class="fas fa-lightbulb"></i> Smart Suggestions</h3><button class="modal-close" id="close-suggestions"><i class="fas fa-times"></i></button></div>
+      <div class="modal-body" id="suggestions-list"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/suggestions.js"></script>
+  <script src="js/templates.js"></script>
+  <script src="js/tutorial.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
