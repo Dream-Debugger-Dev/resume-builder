@@ -1,0 +1,304 @@
+/* ===== Tutorial / Guided Tour Styles ===== */
+
+/* Overlay pieces — form the darkened background around the spotlight */
+.tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+}
+
+.tutorial-overlay-top,
+.tutorial-overlay-left,
+.tutorial-overlay-right,
+.tutorial-overlay-bottom {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.55);
+  pointer-events: auto;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Spotlight cutout */
+.tutorial-spotlight {
+  position: fixed;
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 4px rgba(108, 99, 255, 0.5),
+    0 0 20px rgba(108, 99, 255, 0.3);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Tooltip */
+.tutorial-tooltip {
+  position: fixed;
+  z-index: 10000;
+  background: white;
+  border-radius: 16px;
+  padding: 0;
+  width: 340px;
+  max-width: calc(100vw - 24px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(108, 99, 255, 0.15);
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+[data-theme="dark"] .tutorial-tooltip {
+  background: #1E293B;
+  border-color: rgba(108, 99, 255, 0.25);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tutorial-tooltip-animate {
+  animation: tutorialPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes tutorialPop {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Center position override for animation */
+.tutorial-tooltip[data-position="center"].tutorial-tooltip-animate {
+  animation: tutorialPopCenter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes tutorialPopCenter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Tooltip header */
+.tutorial-tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px 0;
+}
+
+.tutorial-step-counter {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6C63FF;
+  background: rgba(108, 99, 255, 0.1);
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+[data-theme="dark"] .tutorial-step-counter {
+  background: rgba(108, 99, 255, 0.2);
+  color: #8B85FF;
+}
+
+.tutorial-skip-btn {
+  background: none;
+  border: none;
+  color: #9CA3AF;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.tutorial-skip-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #EF4444;
+}
+
+/* Tooltip title */
+.tutorial-tooltip-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1A1A2E;
+  padding: 10px 18px 0;
+  line-height: 1.3;
+}
+
+[data-theme="dark"] .tutorial-tooltip-title {
+  color: #F1F5F9;
+}
+
+/* Tooltip text */
+.tutorial-tooltip-text {
+  font-size: 0.85rem;
+  color: #6B7280;
+  line-height: 1.65;
+  padding: 8px 18px 0;
+}
+
+[data-theme="dark"] .tutorial-tooltip-text {
+  color: #94A3B8;
+}
+
+/* Tooltip footer */
+.tutorial-tooltip-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  margin-top: 10px;
+  border-top: 1px solid #F3F4F6;
+}
+
+[data-theme="dark"] .tutorial-tooltip-footer {
+  border-top-color: #334155;
+}
+
+/* Tutorial buttons */
+.tutorial-btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tutorial-btn-prev {
+  background: transparent;
+  color: #6B7280;
+}
+
+.tutorial-btn-prev:hover {
+  background: #F3F4F6;
+  color: #374151;
+}
+
+[data-theme="dark"] .tutorial-btn-prev:hover {
+  background: #334155;
+  color: #E2E8F0;
+}
+
+.tutorial-btn-next {
+  background: linear-gradient(135deg, #6C63FF, #7C3AED);
+  color: white;
+  box-shadow: 0 2px 10px rgba(108, 99, 255, 0.3);
+}
+
+.tutorial-btn-next:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(108, 99, 255, 0.4);
+}
+
+.tutorial-btn-next:active {
+  transform: translateY(0);
+}
+
+/* Help button (always visible) */
+.tutorial-help-btn {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 80;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6C63FF, #7C3AED);
+  color: white;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 4px 14px rgba(108, 99, 255, 0.4),
+    0 0 0 3px rgba(108, 99, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tutorial-help-btn:hover {
+  transform: scale(1.1) translateY(-2px);
+  box-shadow:
+    0 6px 20px rgba(108, 99, 255, 0.5),
+    0 0 0 5px rgba(108, 99, 255, 0.15);
+}
+
+.tutorial-help-btn:active {
+  transform: scale(0.95);
+}
+
+/* Pulse animation for first-time visitors */
+.tutorial-help-btn.pulse {
+  animation: helpPulse 2s infinite;
+}
+
+@keyframes helpPulse {
+  0% { box-shadow: 0 4px 14px rgba(108,99,255,0.4), 0 0 0 0 rgba(108,99,255,0.4); }
+  70% { box-shadow: 0 4px 14px rgba(108,99,255,0.4), 0 0 0 12px rgba(108,99,255,0); }
+  100% { box-shadow: 0 4px 14px rgba(108,99,255,0.4), 0 0 0 0 rgba(108,99,255,0); }
+}
+
+/* Tooltip for help button */
+.tutorial-help-btn .help-tooltip {
+  position: absolute;
+  left: 54px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  color: #1A1A2E;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border: 1px solid #E5E7EB;
+}
+
+[data-theme="dark"] .tutorial-help-btn .help-tooltip {
+  background: #1E293B;
+  color: #F1F5F9;
+  border-color: #334155;
+}
+
+.tutorial-help-btn:hover .help-tooltip {
+  opacity: 1;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .tutorial-tooltip {
+    width: calc(100vw - 24px);
+    max-width: 340px;
+  }
+
+  .tutorial-help-btn {
+    bottom: 80px;
+    left: 16px;
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .tutorial-help-btn .help-tooltip {
+    display: none;
+  }
+}
