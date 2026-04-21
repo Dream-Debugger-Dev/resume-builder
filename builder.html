@@ -38,9 +38,27 @@
         <span>ResumeForge</span>
       </a>
       <nav class="nav-actions">
-        <button class="btn btn-ghost" id="btn-import" title="Import JSON">
-          <i class="fas fa-upload"></i> <span class="nav-text">Import</span>
-        </button>
+        <div class="import-dropdown" id="import-dropdown">
+          <button class="btn btn-ghost" id="btn-import-main" title="Import Resume">
+            <i class="fas fa-upload"></i> <span class="nav-text">Import</span> <i class="fas fa-caret-down" style="margin-left:2px;font-size:0.7rem;"></i>
+          </button>
+          <div class="download-menu" id="import-menu">
+            <button class="download-option" id="btn-import-json">
+              <i class="fas fa-file-code"></i>
+              <div>
+                <span class="download-option-title">From JSON File</span>
+                <span class="download-option-desc">Any resume JSON (native, JSON Resume, custom)</span>
+              </div>
+            </button>
+            <button class="download-option" id="btn-import-pdf">
+              <i class="fas fa-file-pdf"></i>
+              <div>
+                <span class="download-option-title">From PDF Resume</span>
+                <span class="download-option-desc">Extract data from existing PDF</span>
+              </div>
+            </button>
+          </div>
+        </div>
         <button class="btn btn-ghost" id="btn-export-json" title="Export JSON">
           <i class="fas fa-download"></i> <span class="nav-text">Export</span>
         </button>
@@ -100,6 +118,11 @@
           <div class="step" data-step="3"><span class="step-num"><span>4</span></span><span class="step-label">Skills</span></div>
           <div class="step" data-step="4"><span class="step-num"><span>5</span></span><span class="step-label">Projects</span></div>
           <div class="step" data-step="5"><span class="step-num"><span>6</span></span><span class="step-label">Certs</span></div>
+          <div class="step" data-step="6"><span class="step-num"><span>7</span></span><span class="step-label">Languages</span></div>
+          <div class="step" data-step="7"><span class="step-num"><span>8</span></span><span class="step-label">Awards</span></div>
+          <div class="step" data-step="8"><span class="step-num"><span>9</span></span><span class="step-label">Volunteer</span></div>
+          <div class="step" data-step="9"><span class="step-num"><span>10</span></span><span class="step-label">Publications</span></div>
+          <div class="step" data-step="10"><span class="step-num"><span>11</span></span><span class="step-label">Custom</span></div>
         </div>
       </div>
 
@@ -125,6 +148,11 @@
       <div class="form-step" data-step="3"><h2 class="form-title"><i class="fas fa-cogs"></i> Skills</h2><div id="skills-entries" class="entries-container"></div><button class="btn btn-add" id="add-skill"><i class="fas fa-plus"></i> Add Skill</button></div>
       <div class="form-step" data-step="4"><h2 class="form-title"><i class="fas fa-project-diagram"></i> Projects</h2><div id="projects-entries" class="entries-container"></div><button class="btn btn-add" id="add-project"><i class="fas fa-plus"></i> Add Project</button></div>
       <div class="form-step" data-step="5"><h2 class="form-title"><i class="fas fa-certificate"></i> Certifications</h2><div id="certifications-entries" class="entries-container"></div><button class="btn btn-add" id="add-certification"><i class="fas fa-plus"></i> Add Certification</button></div>
+      <div class="form-step" data-step="6"><h2 class="form-title"><i class="fas fa-language"></i> Languages</h2><p class="form-hint">Languages you speak or write professionally.</p><div id="languages-entries" class="entries-container"></div><button class="btn btn-add" id="add-language"><i class="fas fa-plus"></i> Add Language</button></div>
+      <div class="form-step" data-step="7"><h2 class="form-title"><i class="fas fa-trophy"></i> Awards & Honors</h2><p class="form-hint">Recognition, scholarships, and achievements.</p><div id="awards-entries" class="entries-container"></div><button class="btn btn-add" id="add-award"><i class="fas fa-plus"></i> Add Award</button></div>
+      <div class="form-step" data-step="8"><h2 class="form-title"><i class="fas fa-hands-helping"></i> Volunteer Experience</h2><p class="form-hint">Community service, non-profit work, or pro-bono contributions.</p><div id="volunteer-entries" class="entries-container"></div><button class="btn btn-add" id="add-volunteer"><i class="fas fa-plus"></i> Add Volunteer Work</button></div>
+      <div class="form-step" data-step="9"><h2 class="form-title"><i class="fas fa-book"></i> Publications</h2><p class="form-hint">Papers, articles, blogs, or research you've published.</p><div id="publications-entries" class="entries-container"></div><button class="btn btn-add" id="add-publication"><i class="fas fa-plus"></i> Add Publication</button></div>
+      <div class="form-step" data-step="10"><h2 class="form-title"><i class="fas fa-star"></i> Custom Sections</h2><p class="form-hint">Add any additional sections that don't fit above — hobbies, references, interests, anything.</p><div id="custom-entries" class="entries-container"></div><button class="btn btn-add" id="add-custom"><i class="fas fa-plus"></i> Add Custom Section</button></div>
 
       <div class="form-nav" id="form-nav">
         <button class="btn btn-secondary" id="btn-prev" disabled><i class="fas fa-arrow-left"></i> Previous</button>
@@ -156,7 +184,7 @@
   <button class="btn btn-preview-toggle" id="btn-preview-toggle"><i class="fas fa-eye"></i> Preview</button>
 
   <button class="tutorial-help-btn" id="btn-tutorial" title="Take a tour"><i class="fas fa-question"></i><span class="help-tooltip">Take a guided tour</span></button>
-  <input type="file" id="file-import" accept=".json" style="display:none">
+  <input type="file" id="file-import" accept=".json,application/json,.pdf,application/pdf" style="display:none">
 
   <div class="modal-overlay" id="suggestions-modal">
     <div class="modal modal-suggestions">
@@ -165,9 +193,30 @@
     </div>
   </div>
 
+  <!-- Import Report Modal -->
+  <div class="modal-overlay" id="import-modal">
+    <div class="modal modal-suggestions">
+      <div class="modal-header">
+        <h3><i class="fas fa-file-import"></i> Import Complete</h3>
+        <button class="modal-close" id="close-import"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="import-report"></div>
+      <div class="modal-footer" style="padding:16px 20px;display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn btn-primary" id="btn-import-confirm">Looks Good</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
+  <script>
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
+    }
+  </script>
   <script src="js/data.js"></script>
+  <script src="js/importer.js"></script>
   <script src="js/suggestions.js"></script>
   <script src="js/templates.js"></script>
   <script src="js/tutorial.js"></script>
