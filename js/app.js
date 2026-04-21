@@ -3,8 +3,9 @@
   'use strict';
 
   let currentStep = 0;
-  const totalSteps = 6;
+  const totalSteps = 11;
   let autoSaveTimer = null;
+  let pendingImport = null; // staged import awaiting user confirmation
 
   // ===== Initialize =====
   function init() {
@@ -53,6 +54,11 @@
     document.getElementById('add-skill').addEventListener('click', () => addEntry('skills'));
     document.getElementById('add-project').addEventListener('click', () => addEntry('projects'));
     document.getElementById('add-certification').addEventListener('click', () => addEntry('certifications'));
+    document.getElementById('add-language').addEventListener('click', () => addEntry('languages'));
+    document.getElementById('add-award').addEventListener('click', () => addEntry('awards'));
+    document.getElementById('add-volunteer').addEventListener('click', () => addEntry('volunteer'));
+    document.getElementById('add-publication').addEventListener('click', () => addEntry('publications'));
+    document.getElementById('add-custom').addEventListener('click', () => addEntry('custom'));
 
     // Template switching
     document.querySelectorAll('.template-card:not(.locked)').forEach(card => {
@@ -91,10 +97,55 @@
       downloadDOCX();
     });
 
-    // Export/Import JSON
+    // Export/Import
     document.getElementById('btn-export-json').addEventListener('click', () => ResumeData.exportJSON());
-    document.getElementById('btn-import').addEventListener('click', () => document.getElementById('file-import').click());
-    document.getElementById('file-import').addEventListener('change', handleImport);
+
+    // Import dropdown
+    const importMain = document.getElementById('btn-import-main');
+    const importMenu = document.getElementById('import-menu');
+    if (importMain && importMenu) {
+      importMain.addEventListener('click', (e) => {
+        e.stopPropagation();
+        importMenu.classList.toggle('open');
+      });
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.import-dropdown')) importMenu.classList.remove('open');
+      });
+    }
+    const fileInput = document.getElementById('file-import');
+    document.getElementById('btn-import-json').addEventListener('click', () => {
+      importMenu.classList.remove('open');
+      fileInput.accept = '.json,application/json';
+      fileInput.click();
+    });
+    document.getElementById('btn-import-pdf').addEventListener('click', () => {
+      importMenu.classList.remove('open');
+      fileInput.accept = '.pdf,application/pdf';
+      fileInput.click();
+    });
+    fileInput.addEventListener('change', handleImport);
+
+    // Import confirmation modal
+    document.getElementById('close-import').addEventListener('click', () => {
+      document.getElementById('import-modal').classList.remove('active');
+      pendingImport = null;
+    });
+    document.getElementById('import-modal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        e.currentTarget.classList.remove('active');
+        pendingImport = null;
+      }
+    });
+    document.getElementById('btn-import-confirm').addEventListener('click', () => {
+      if (pendingImport) {
+        ResumeData.applyImport(pendingImport);
+        restoreFormData();
+        updatePreview();
+        updateStrength();
+        pendingImport = null;
+      }
+      document.getElementById('import-modal').classList.remove('active');
+    });
 
     // Dark mode
     document.getElementById('btn-dark-mode').addEventListener('click', toggleDarkMode);
@@ -204,10 +255,15 @@
       experience: { company: '', position: '', startDate: '', endDate: '', description: '' },
       skills: { name: '', level: 50 },
       projects: { name: '', tech: '', description: '', link: '' },
-      certifications: { name: '', issuer: '', date: '' }
+      certifications: { name: '', issuer: '', date: '' },
+      languages: { name: '', proficiency: 'Fluent' },
+      awards: { title: '', issuer: '', date: '', description: '' },
+      volunteer: { organization: '', role: '', startDate: '', endDate: '', description: '' },
+      publications: { title: '', publisher: '', date: '', link: '', description: '' },
+      custom: { title: 'Custom Section', items: [] }
     };
 
-    const entry = { ...templates[type], id: Date.now() };
+    const entry = { ...templates[type], id: Date.now() + Math.floor(Math.random() * 1000) };
     ResumeData[type].push(entry);
     renderEntries(type);
     scheduleAutoSave();
@@ -255,7 +311,12 @@
       experience: renderExperienceEntry,
       skills: renderSkillEntry,
       projects: renderProjectEntry,
-      certifications: renderCertificationEntry
+      certifications: renderCertificationEntry,
+      languages: renderLanguageEntry,
+      awards: renderAwardEntry,
+      volunteer: renderVolunteerEntry,
+      publications: renderPublicationEntry,
+      custom: renderCustomEntry
     };
 
     container.innerHTML = '';
@@ -425,6 +486,139 @@
     return card;
   }
 
+  function renderLanguageEntry(entry, index) {
+    const card = createEntryCard(entry, 'languages', `Language #${index + 1}`);
+    const grid = document.createElement('div');
+    grid.className = 'form-grid';
+
+    grid.appendChild(createInput('Language', entry.name, 'English, Spanish, Hindi...', v => entry.name = v).group);
+
+    const profGroup = document.createElement('div');
+    profGroup.className = 'form-group';
+    profGroup.innerHTML = `<label>Proficiency</label>`;
+    const select = document.createElement('select');
+    ['Native', 'Fluent', 'Professional', 'Conversational', 'Basic'].forEach(opt => {
+      const o = document.createElement('option');
+      o.value = o.textContent = opt;
+      if ((entry.proficiency || 'Fluent') === opt) o.selected = true;
+      select.appendChild(o);
+    });
+    select.addEventListener('change', (e) => {
+      entry.proficiency = e.target.value;
+      scheduleAutoSave();
+      updatePreview();
+    });
+    profGroup.appendChild(select);
+    grid.appendChild(profGroup);
+
+    card.appendChild(grid);
+    return card;
+  }
+
+  function renderAwardEntry(entry, index) {
+    const card = createEntryCard(entry, 'awards', `Award #${index + 1}`);
+    const grid = document.createElement('div');
+    grid.className = 'form-grid';
+
+    grid.appendChild(createInput('Award Title', entry.title, 'Employee of the Year', v => entry.title = v).group);
+    grid.appendChild(createInput('Issuer', entry.issuer, 'Organization name', v => entry.issuer = v).group);
+    grid.appendChild(createInput('Date', entry.date, '2024', v => entry.date = v).group);
+    const descGroup = createInput('Description (optional)', entry.description, 'What was this award for?', v => entry.description = v, 'textarea');
+    descGroup.group.classList.add('full-width');
+    grid.appendChild(descGroup.group);
+
+    card.appendChild(grid);
+    return card;
+  }
+
+  function renderVolunteerEntry(entry, index) {
+    const card = createEntryCard(entry, 'volunteer', `Volunteer #${index + 1}`);
+    const grid = document.createElement('div');
+    grid.className = 'form-grid';
+
+    grid.appendChild(createInput('Organization', entry.organization, 'Red Cross, Goonj...', v => entry.organization = v).group);
+    grid.appendChild(createInput('Role', entry.role, 'Volunteer Coordinator', v => entry.role = v).group);
+    grid.appendChild(createInput('Start Date', entry.startDate, 'Jan 2022', v => entry.startDate = v).group);
+    grid.appendChild(createInput('End Date', entry.endDate, 'Present', v => entry.endDate = v).group);
+    const descGroup = createInput('Description', entry.description, 'What did you do? Impact created?', v => entry.description = v, 'textarea');
+    descGroup.group.classList.add('full-width');
+    grid.appendChild(descGroup.group);
+
+    card.appendChild(grid);
+    return card;
+  }
+
+  function renderPublicationEntry(entry, index) {
+    const card = createEntryCard(entry, 'publications', `Publication #${index + 1}`);
+    const grid = document.createElement('div');
+    grid.className = 'form-grid';
+
+    grid.appendChild(createInput('Title', entry.title, 'Publication title', v => entry.title = v).group);
+    grid.appendChild(createInput('Publisher / Journal', entry.publisher, 'IEEE, Nature, Medium...', v => entry.publisher = v).group);
+    grid.appendChild(createInput('Date', entry.date, '2024', v => entry.date = v).group);
+    grid.appendChild(createInput('Link', entry.link, 'https://...', v => entry.link = v, 'url').group);
+    const descGroup = createInput('Summary (optional)', entry.description, 'Short description...', v => entry.description = v, 'textarea');
+    descGroup.group.classList.add('full-width');
+    grid.appendChild(descGroup.group);
+
+    card.appendChild(grid);
+    return card;
+  }
+
+  function renderCustomEntry(entry, index) {
+    const card = createEntryCard(entry, 'custom', `Section #${index + 1}`);
+    const titleInput = createInput('Section Title', entry.title, 'e.g., Hobbies, References, Interests', v => entry.title = v);
+    titleInput.group.classList.add('full-width');
+    card.appendChild(titleInput.group);
+
+    const itemsWrap = document.createElement('div');
+    itemsWrap.className = 'custom-items-wrap';
+    card.appendChild(itemsWrap);
+
+    const renderItems = () => {
+      itemsWrap.innerHTML = '';
+      (entry.items || []).forEach((item, idx) => {
+        const row = document.createElement('div');
+        row.className = 'custom-item-row';
+
+        const grid = document.createElement('div');
+        grid.className = 'form-grid';
+        grid.appendChild(createInput(`Item ${idx + 1} Heading`, item.heading, 'Short label (optional)', v => item.heading = v).group);
+        const descG = createInput('Details', item.description, 'Your content...', v => item.description = v, 'textarea');
+        descG.group.classList.add('full-width');
+        grid.appendChild(descG.group);
+        row.appendChild(grid);
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'btn btn-danger btn-sm';
+        removeBtn.innerHTML = '<i class="fas fa-trash"></i> Remove Item';
+        removeBtn.addEventListener('click', () => {
+          entry.items = entry.items.filter(i => i.id !== item.id);
+          renderItems();
+          scheduleAutoSave();
+          updatePreview();
+        });
+        row.appendChild(removeBtn);
+        itemsWrap.appendChild(row);
+      });
+    };
+
+    const addItemBtn = document.createElement('button');
+    addItemBtn.className = 'btn btn-add btn-sm';
+    addItemBtn.innerHTML = '<i class="fas fa-plus"></i> Add Item';
+    addItemBtn.addEventListener('click', () => {
+      entry.items = entry.items || [];
+      entry.items.push({ id: Date.now() + Math.floor(Math.random() * 1000), heading: '', description: '' });
+      renderItems();
+      scheduleAutoSave();
+      updatePreview();
+    });
+
+    renderItems();
+    card.appendChild(addItemBtn);
+    return card;
+  }
+
   // ===== Restore Form Data =====
   function restoreFormData() {
     Object.keys(ResumeData.personal).forEach(key => {
@@ -432,7 +626,8 @@
       if (input) input.value = ResumeData.personal[key] || '';
     });
 
-    ['education', 'experience', 'skills', 'projects', 'certifications'].forEach(type => {
+    ['education', 'experience', 'skills', 'projects', 'certifications',
+     'languages', 'awards', 'volunteer', 'publications', 'custom'].forEach(type => {
       renderEntries(type);
     });
 
@@ -722,6 +917,114 @@
       });
     }
 
+    // --- Languages ---
+    if (ResumeData.languages.length > 0) {
+      sections.push(heading('LANGUAGES', 2));
+      const langLine = ResumeData.languages
+        .filter(l => l.name)
+        .map(l => `${l.name}${l.proficiency ? ' (' + l.proficiency + ')' : ''}`)
+        .join('  •  ');
+      sections.push(new Paragraph({
+        children: [textRun(langLine, { size: 20, color: '374151' })],
+        spacing: { after: 160 },
+      }));
+    }
+
+    // --- Awards ---
+    if (ResumeData.awards.length > 0) {
+      sections.push(heading('AWARDS & HONORS', 2));
+      ResumeData.awards.forEach(a => {
+        sections.push(new Paragraph({
+          children: [
+            textRun(a.title || '', { bold: true, size: 20, color: '1A1A2E' }),
+            a.issuer ? textRun('  —  ', { size: 18 }) : textRun(''),
+            a.issuer ? textRun(a.issuer, { size: 18, color: '6B7280' }) : textRun(''),
+            a.date ? textRun('  (' + a.date + ')', { size: 18, color: '9CA3AF', italic: true }) : textRun(''),
+          ],
+          spacing: { before: 80, after: 40 },
+        }));
+        if (a.description) {
+          sections.push(new Paragraph({
+            children: [textRun(a.description, { size: 20, color: '4B5563' })],
+            spacing: { after: 60 },
+          }));
+        }
+      });
+    }
+
+    // --- Volunteer ---
+    if (ResumeData.volunteer.length > 0) {
+      sections.push(heading('VOLUNTEER EXPERIENCE', 2));
+      ResumeData.volunteer.forEach(v => {
+        sections.push(new Paragraph({
+          children: [
+            textRun(v.organization || '', { bold: true, size: 22, color: '1A1A2E' }),
+            textRun('    '),
+            textRun(`${v.startDate || ''} - ${v.endDate || 'Present'}`, { size: 18, color: '9CA3AF', italic: true }),
+          ],
+          spacing: { before: 120, after: 40 },
+        }));
+        if (v.role) {
+          sections.push(new Paragraph({
+            children: [textRun(v.role, { size: 20, color: '6C63FF', italic: true })],
+            spacing: { after: 60 },
+          }));
+        }
+        if (v.description) {
+          v.description.split('\n').forEach(line => {
+            const clean = line.replace(/^[•\-\s]+/, '').trim();
+            if (clean) sections.push(bulletParagraph(clean));
+          });
+        }
+      });
+    }
+
+    // --- Publications ---
+    if (ResumeData.publications.length > 0) {
+      sections.push(heading('PUBLICATIONS', 2));
+      ResumeData.publications.forEach(pub => {
+        sections.push(new Paragraph({
+          children: [textRun(pub.title || '', { bold: true, size: 20, color: '1A1A2E' })],
+          spacing: { before: 80, after: 40 },
+        }));
+        const meta = [pub.publisher, pub.date].filter(Boolean).join(' • ');
+        if (meta) {
+          sections.push(new Paragraph({
+            children: [textRun(meta, { size: 18, color: '6B7280', italic: true })],
+            spacing: { after: 40 },
+          }));
+        }
+        if (pub.description) {
+          sections.push(new Paragraph({
+            children: [textRun(pub.description, { size: 20, color: '4B5563' })],
+            spacing: { after: 60 },
+          }));
+        }
+      });
+    }
+
+    // --- Custom Sections ---
+    if (ResumeData.custom.length > 0) {
+      ResumeData.custom.forEach(sec => {
+        if (!sec.title) return;
+        sections.push(heading((sec.title || 'Additional').toUpperCase(), 2));
+        (sec.items || []).forEach(item => {
+          if (item.heading) {
+            sections.push(new Paragraph({
+              children: [textRun(item.heading, { bold: true, size: 20, color: '1A1A2E' })],
+              spacing: { before: 60, after: 30 },
+            }));
+          }
+          if (item.description) {
+            item.description.split('\n').forEach(line => {
+              const clean = line.replace(/^[•\-\s]+/, '').trim();
+              if (clean) sections.push(bulletParagraph(clean));
+            });
+          }
+        });
+      });
+    }
+
     // --- Build & Save ---
     const doc = new Document({
       sections: [{
@@ -744,16 +1047,52 @@
     const file = e.target.files[0];
     if (!file) return;
 
-    ResumeData.importJSON(file).then(() => {
-      restoreFormData();
-      updatePreview();
-      updateStrength();
-      alert('Resume data imported successfully!');
-    }).catch(() => {
-      alert('Failed to import. Please check the file format.');
-    });
+    const btn = document.getElementById('btn-import-main');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Parsing...';
+    btn.disabled = true;
 
-    e.target.value = '';
+    Importer.importFile(file).then(({ data, report }) => {
+      pendingImport = data;
+      showImportReport(report, file.name);
+    }).catch((err) => {
+      alert('Import failed: ' + (err.message || 'Could not parse this file.'));
+    }).finally(() => {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      e.target.value = '';
+    });
+  }
+
+  function showImportReport(report, filename) {
+    const body = document.getElementById('import-report');
+    const isPdf = report.source === 'pdf';
+    let html = `<div class="import-summary">`;
+    html += `<p><strong>Source:</strong> ${filename} <span class="import-badge">${isPdf ? 'PDF' : 'JSON'}</span></p>`;
+
+    if (isPdf) {
+      html += `<div class="import-warning"><i class="fas fa-exclamation-triangle"></i> PDF extraction is best-effort. Please review the imported data carefully before saving — some fields may need manual correction.</div>`;
+    }
+
+    if (report.imported && report.imported.length) {
+      html += `<h4 style="margin-top:16px;">✅ Detected & imported:</h4><ul>`;
+      report.imported.forEach(item => html += `<li>${item}</li>`);
+      html += `</ul>`;
+    } else {
+      html += `<p style="color:var(--warning);">⚠️ No recognizable sections were found. You may need to check the file format.</p>`;
+    }
+
+    if (report.skipped && report.skipped.length) {
+      html += `<h4 style="margin-top:12px;">⏭️ Skipped (unrecognized):</h4><ul>`;
+      report.skipped.forEach(item => html += `<li>${item}</li>`);
+      html += `</ul>`;
+    }
+
+    html += `<p style="margin-top:16px;color:var(--text-secondary);font-size:14px;">Click <strong>Looks Good</strong> to apply these changes. This will replace your current resume data.</p>`;
+    html += `</div>`;
+    body.innerHTML = html;
+
+    document.getElementById('import-modal').classList.add('active');
   }
 
   // ===== Dark Mode =====

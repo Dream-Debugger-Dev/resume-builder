@@ -15,7 +15,17 @@ const ResumeData = {
   skills: [],
   projects: [],
   certifications: [],
+  languages: [],        // { id, name, proficiency }
+  awards: [],           // { id, title, issuer, date, description }
+  volunteer: [],        // { id, organization, role, startDate, endDate, description }
+  publications: [],     // { id, title, publisher, date, link, description }
+  custom: [],           // { id, title, items: [{ id, heading, description }] }
   template: 'modern',
+
+  _allSectionKeys() {
+    return ['education', 'experience', 'skills', 'projects', 'certifications',
+            'languages', 'awards', 'volunteer', 'publications', 'custom'];
+  },
 
   // Load from localStorage
   load() {
@@ -24,11 +34,7 @@ const ResumeData = {
       try {
         const parsed = JSON.parse(saved);
         Object.assign(this.personal, parsed.personal || {});
-        this.education = parsed.education || [];
-        this.experience = parsed.experience || [];
-        this.skills = parsed.skills || [];
-        this.projects = parsed.projects || [];
-        this.certifications = parsed.certifications || [];
+        this._allSectionKeys().forEach(k => { this[k] = parsed[k] || []; });
         this.template = parsed.template || 'modern';
       } catch (e) {
         console.warn('Failed to load saved data:', e);
@@ -38,20 +44,16 @@ const ResumeData = {
 
   // Save to localStorage
   save() {
-    localStorage.setItem('resumeData', JSON.stringify({
-      personal: this.personal,
-      education: this.education,
-      experience: this.experience,
-      skills: this.skills,
-      projects: this.projects,
-      certifications: this.certifications,
-      template: this.template
-    }));
+    const out = { personal: this.personal, template: this.template };
+    this._allSectionKeys().forEach(k => { out[k] = this[k]; });
+    localStorage.setItem('resumeData', JSON.stringify(out));
   },
 
   // Export as JSON
   exportJSON() {
-    const blob = new Blob([JSON.stringify(this, null, 2)], { type: 'application/json' });
+    const out = { personal: this.personal, template: this.template };
+    this._allSectionKeys().forEach(k => { out[k] = this[k]; });
+    const blob = new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -60,28 +62,12 @@ const ResumeData = {
     URL.revokeObjectURL(url);
   },
 
-  // Import from JSON
-  importJSON(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const parsed = JSON.parse(e.target.result);
-          Object.assign(this.personal, parsed.personal || {});
-          this.education = parsed.education || [];
-          this.experience = parsed.experience || [];
-          this.skills = parsed.skills || [];
-          this.projects = parsed.projects || [];
-          this.certifications = parsed.certifications || [];
-          this.template = parsed.template || 'modern';
-          this.save();
-          resolve();
-        } catch (err) {
-          reject(err);
-        }
-      };
-      reader.readAsText(file);
-    });
+  // Replace current data with a normalized object
+  applyImport(normalized) {
+    Object.assign(this.personal, normalized.personal || {});
+    this._allSectionKeys().forEach(k => { this[k] = normalized[k] || []; });
+    if (normalized.template) this.template = normalized.template;
+    this.save();
   },
 
   // Calculate strength score
@@ -97,14 +83,17 @@ const ResumeData = {
     if (p.summary && p.summary.length > 30) score += 10; else tips.push('Write a professional summary (30+ chars)');
     if (p.linkedin) score += 5; else tips.push('Add your LinkedIn profile');
 
-    if (this.education.length > 0) score += 15; else tips.push('Add at least one education entry');
-    if (this.experience.length > 0) score += 20; else tips.push('Add work experience');
-    if (this.experience.length >= 2) score += 5;
+    if (this.education.length > 0) score += 12; else tips.push('Add at least one education entry');
+    if (this.experience.length > 0) score += 18; else tips.push('Add work experience');
+    if (this.experience.length >= 2) score += 4;
 
-    if (this.skills.length >= 3) score += 10; else tips.push('Add at least 3 skills');
-    if (this.skills.length >= 5) score += 5; else if (this.skills.length < 5) tips.push('Add more skills (5+ recommended)');
+    if (this.skills.length >= 3) score += 8; else tips.push('Add at least 3 skills');
+    if (this.skills.length >= 5) score += 4;
 
-    if (this.projects.length > 0) score += 5; else tips.push('Add a project to showcase your work');
+    if (this.projects.length > 0) score += 4; else tips.push('Add a project to showcase your work');
+    if (this.languages.length > 0) score += 2;
+    if (this.awards.length > 0) score += 2;
+    if (this.volunteer.length > 0) score += 1;
 
     return { score: Math.min(score, 100), tips };
   }

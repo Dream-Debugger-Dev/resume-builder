@@ -26,6 +26,83 @@ const Templates = {
     return 'Novice';
   },
 
+  // Shared renderers for new sections
+  renderLanguages(data) {
+    if (!data.languages || !data.languages.length) return '';
+    const items = data.languages.filter(l => l.name).map(l =>
+      `<span class="lang-item"><strong>${this.escapeHtml(l.name)}</strong>${l.proficiency ? ` <span class="lang-prof">(${this.escapeHtml(l.proficiency)})</span>` : ''}</span>`
+    ).join('');
+    return `<div class="resume-section"><div class="section-title">Languages</div><div class="langs-grid">${items}</div></div>`;
+  },
+
+  renderAwards(data) {
+    if (!data.awards || !data.awards.length) return '';
+    let html = `<div class="resume-section"><div class="section-title">Awards & Honors</div>`;
+    data.awards.forEach(a => {
+      html += `<div class="entry">
+        <div class="entry-top">
+          <span class="entry-name">${this.escapeHtml(a.title)}</span>
+          ${a.date ? `<span class="entry-date">${this.escapeHtml(a.date)}</span>` : ''}
+        </div>
+        ${a.issuer ? `<div class="entry-sub">${this.escapeHtml(a.issuer)}</div>` : ''}
+        ${a.description ? `<div class="entry-desc">${this.escapeHtml(a.description)}</div>` : ''}
+      </div>`;
+    });
+    html += `</div>`;
+    return html;
+  },
+
+  renderVolunteer(data) {
+    if (!data.volunteer || !data.volunteer.length) return '';
+    let html = `<div class="resume-section"><div class="section-title">Volunteer Experience</div>`;
+    data.volunteer.forEach(v => {
+      html += `<div class="entry">
+        <div class="entry-top">
+          <span class="entry-name">${this.escapeHtml(v.organization)}</span>
+          <span class="entry-date">${this.escapeHtml(v.startDate)} - ${this.escapeHtml(v.endDate) || 'Present'}</span>
+        </div>
+        ${v.role ? `<div class="entry-sub">${this.escapeHtml(v.role)}</div>` : ''}
+        ${v.description ? `<div class="entry-desc">${this.escapeHtml(v.description).replace(/\n/g, '<br>')}</div>` : ''}
+      </div>`;
+    });
+    html += `</div>`;
+    return html;
+  },
+
+  renderPublications(data) {
+    if (!data.publications || !data.publications.length) return '';
+    let html = `<div class="resume-section"><div class="section-title">Publications</div>`;
+    data.publications.forEach(p => {
+      html += `<div class="entry">
+        <div class="entry-top">
+          <span class="entry-name">${p.link ? `<a href="${this.escapeHtml(p.link)}" target="_blank" rel="noopener">${this.escapeHtml(p.title)}</a>` : this.escapeHtml(p.title)}</span>
+          ${p.date ? `<span class="entry-date">${this.escapeHtml(p.date)}</span>` : ''}
+        </div>
+        ${p.publisher ? `<div class="entry-sub">${this.escapeHtml(p.publisher)}</div>` : ''}
+        ${p.description ? `<div class="entry-desc">${this.escapeHtml(p.description)}</div>` : ''}
+      </div>`;
+    });
+    html += `</div>`;
+    return html;
+  },
+
+  renderCustom(data) {
+    if (!data.custom || !data.custom.length) return '';
+    let html = '';
+    data.custom.forEach(sec => {
+      if (!sec.title && !(sec.items && sec.items.length)) return;
+      html += `<div class="resume-section"><div class="section-title">${this.escapeHtml(sec.title || 'Additional')}</div>`;
+      (sec.items || []).forEach(item => {
+        html += `<div class="entry">
+          ${item.heading ? `<div class="entry-name">${this.escapeHtml(item.heading)}</div>` : ''}
+          ${item.description ? `<div class="entry-desc">${this.escapeHtml(item.description).replace(/\n/g, '<br>')}</div>` : ''}
+        </div>`;
+      });
+      html += `</div>`;
+    });
+    return html;
+  },
+
   // Modern Minimal Template
   modern(data) {
     const p = data.personal;
@@ -115,6 +192,12 @@ const Templates = {
       html += `</div>`;
     }
 
+    html += this.renderLanguages(data);
+    html += this.renderAwards(data);
+    html += this.renderVolunteer(data);
+    html += this.renderPublications(data);
+    html += this.renderCustom(data);
+
     html += `</div>`;
     return html;
   },
@@ -162,10 +245,18 @@ const Templates = {
       });
     }
 
-    html += `</div>`;
+    // Languages in sidebar
+    if (data.languages && data.languages.length > 0) {
+      html += `<div class="section-title">Languages</div>`;
+      data.languages.filter(l => l.name).forEach(l => {
+        html += `<div class="contact-item" style="flex-direction:column;align-items:flex-start;gap:2px;">
+          <strong style="font-size:10px;">${this.escapeHtml(l.name)}</strong>
+          ${l.proficiency ? `<span style="opacity:0.7;font-size:9px;">${this.escapeHtml(l.proficiency)}</span>` : ''}
+        </div>`;
+      });
+    }
 
-    // Main Content
-    html += `<div class="main-content">`;
+    html += `</div>`;
 
     if (p.summary) {
       html += `<div class="resume-summary">${this.escapeHtml(p.summary)}</div>`;
@@ -214,6 +305,11 @@ const Templates = {
       });
       html += `</div>`;
     }
+
+    html += this.renderAwards(data);
+    html += this.renderVolunteer(data);
+    html += this.renderPublications(data);
+    html += this.renderCustom(data);
 
     html += `</div></div>`;
     return html;
@@ -310,6 +406,12 @@ const Templates = {
       });
       html += `</div>`;
     }
+
+    html += this.renderLanguages(data);
+    html += this.renderAwards(data);
+    html += this.renderVolunteer(data);
+    html += this.renderPublications(data);
+    html += this.renderCustom(data);
 
     html += `</div>`; // close resume-body
     html += `</div>`;

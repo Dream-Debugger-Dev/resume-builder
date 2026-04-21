@@ -9,62 +9,62 @@ const Tutorial = {
     {
       target: '.logo',
       title: 'Welcome to ResumeForge! 👋',
-      text: 'This is your free professional resume builder. Let\'s take a quick tour to help you create an amazing resume in minutes.',
+      text: 'This is your free professional resume builder. Let\'s take a quick tour so you can create an amazing resume in minutes.',
       position: 'bottom'
     },
     {
       target: '.step-progress',
-      title: 'Step-by-Step Form 📝',
-      text: 'Your resume is built in 6 easy steps: Personal Info, Education, Experience, Skills, Projects, and Certifications. Click any step to jump directly to it.',
+      title: 'Eleven Steps, Fully Flexible 📝',
+      text: 'Build your resume across 11 sections: Personal, Education, Experience, Skills, Projects, Certifications, Languages, Awards, Volunteer, Publications, and Custom Sections. Click any step to jump straight to it — scroll horizontally if they overflow.',
       position: 'bottom'
     },
     {
       target: '.form-step.active',
       title: 'Fill Your Details ✍️',
-      text: 'Start by entering your personal information here. Fields marked with * are required. Everything else is optional but recommended for a stronger resume.',
+      text: 'Start with your personal info. Fields marked with * are required; everything else is optional but helps strengthen your resume. Changes auto-save as you type.',
       position: 'right'
     },
     {
       target: '#btn-next',
-      title: 'Navigate Between Steps ➡️',
-      text: 'Use Previous and Next buttons to move between sections. You can also click the step numbers at the top to jump to any section.',
+      title: 'Navigate Between Sections ➡️',
+      text: 'Use Previous and Next to move between sections, or click any step number at the top to jump directly. Pro tip: Ctrl + ← / → also works.',
       position: 'top'
     },
     {
       target: '.strength-bar-container',
       title: 'Resume Strength Score 💪',
-      text: 'This bar shows how complete your resume is. Fill more sections to increase your score. Tips appear here to help you improve.',
+      text: 'This bar tracks how complete your resume is. Filling core sections (Experience, Education, Skills) boosts it the most. Extras like Languages and Awards give smaller bonuses. Tips appear here to guide you.',
       position: 'bottom'
     },
     {
       target: '.preview-panel .preview-header',
       title: 'Live Preview 👁️',
-      text: 'See your resume update in real-time as you type. No need to refresh — changes appear instantly on the right side.',
+      text: 'Your resume updates in real-time on the right as you type. No refresh needed.',
       position: 'left',
       mobileNote: 'On mobile, tap the "Preview" button at the bottom-right to see your resume.'
     },
     {
       target: '.template-picker',
       title: 'Switch Templates 🎨',
-      text: 'Choose from 3 professional templates: Modern (ATS-friendly), Creative (with sidebar), and Corporate (dark header). Hover on each icon to see a preview. Your data stays intact when switching!',
+      text: 'Choose from 3 professional designs: Modern (ATS-friendly, single column), Creative (sidebar with skills & languages), or Corporate (bold header, structured). All new sections render across all templates. Your data stays intact when switching.',
       position: 'top'
     },
     {
       target: '#btn-download-main',
       title: 'Download Your Resume 📄',
-      text: 'Click here to download your resume. Choose PDF for print-ready quality, or Word (.docx) if you want to edit it later in Microsoft Word or Google Docs.',
+      text: 'Download as PDF (print-ready, best for applications) or Word (.docx) if you want to edit it later in Word or Google Docs. All sections are included in both formats.',
+      position: 'bottom'
+    },
+    {
+      target: '#btn-import-main',
+      title: 'Import from Anywhere 📂',
+      text: 'Bring in an existing resume from a JSON file OR a PDF. We support the JSON Resume standard, our native format, and fuzzy-match custom shapes. PDF extraction pulls text from any text-based PDF and maps it to the right sections — you\'ll see a review step before anything is applied.',
       position: 'bottom'
     },
     {
       target: '#btn-export-json',
       title: 'Export / Save Your Data 💾',
-      text: 'Export your resume data as a JSON file to save it on your computer. You can import it later to continue editing.',
-      position: 'bottom'
-    },
-    {
-      target: '#btn-import',
-      title: 'Import Resume Data 📂',
-      text: 'Have a previously saved JSON file? Import it here to load all your data back instantly.',
+      text: 'Export all your resume data as a JSON file. Store it as a backup or use it on another device — just import it back.',
       position: 'bottom'
     },
     {
@@ -76,7 +76,7 @@ const Tutorial = {
     {
       target: null,
       title: 'You\'re All Set! 🚀',
-      text: 'Start filling in your details and watch your professional resume come to life. Use the "Suggestions" buttons for AI-powered bullet points. Happy building!',
+      text: 'Start filling in your details and watch your resume come to life. Use the "Suggestions" buttons on Summary, Experience, and Projects for industry-specific bullet points across 9+ fields. Happy building!',
       position: 'center'
     }
   ],
