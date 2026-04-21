@@ -605,3 +605,39 @@
 #print-container .template-corporate .skill-item {
   font-size: 9pt;
 }
+
+
+/* ===== New Sections (Languages, Awards, Volunteer, Publications, Custom) ===== */
+
+/* Languages grid */
+.resume-page .langs-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  font-size: 13px;
+}
+.resume-page .lang-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.resume-page .lang-prof {
+  color: #6B7280;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Creative template: languages in sidebar already use contact-item style */
+.template-creative .sidebar .lang-item {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Publications: link styling inside resume */
+.resume-page .entry-name a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+.resume-page .entry-name a:hover {
+  opacity: 0.8;
+}

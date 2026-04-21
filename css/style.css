@@ -1476,3 +1476,132 @@ body.preview-fullscreen .tutorial-help-btn {
   color: var(--primary);
   font-weight: 700;
 }
+
+
+/* ===== Form hints for new sections ===== */
+.form-hint {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: -8px 0 18px;
+  padding: 10px 14px;
+  background: rgba(108, 99, 255, 0.05);
+  border-left: 3px solid var(--primary);
+  border-radius: var(--radius-xs);
+}
+
+/* ===== Import dropdown (mirrors download-dropdown) ===== */
+.import-dropdown {
+  position: relative;
+  display: inline-block;
+}
+.import-dropdown .download-menu {
+  right: 0;
+  left: auto;
+}
+
+/* ===== Select input styling (for language proficiency) ===== */
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xs);
+  background: var(--bg-card);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* ===== Custom Section Items ===== */
+.custom-items-wrap {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.custom-item-row {
+  padding: 14px;
+  background: rgba(108, 99, 255, 0.03);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-xs);
+}
+.custom-item-row .btn {
+  margin-top: 8px;
+}
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+/* ===== Import Report Modal ===== */
+.import-summary {
+  padding: 4px 2px;
+}
+.import-summary p {
+  margin: 8px 0;
+  color: var(--text-secondary);
+}
+.import-summary ul {
+  margin: 8px 0 12px 20px;
+  color: var(--text);
+}
+.import-summary ul li {
+  padding: 3px 0;
+  font-size: 14px;
+}
+.import-summary h4 {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.import-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  margin-left: 8px;
+  background: var(--primary);
+  color: white;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.import-warning {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--warning-light);
+  border: 1px solid var(--warning);
+  border-radius: var(--radius-xs);
+  color: var(--warning);
+  font-size: 13px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+}
+.import-warning i {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* Step progress overflow scroll on narrower screens (we now have 11 steps) */
+.step-progress {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.step-progress::-webkit-scrollbar {
+  height: 4px;
+}
+.step-progress::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 2px;
+}
+.step-track {
+  min-width: max-content;
+}
